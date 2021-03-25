@@ -4,12 +4,12 @@ import lesscpy
 from six import StringIO
 
 # required
-PATH_PROJECT = '<your-project-path>'
+PATH_PROJECT = '<project-path>'
 PORT = 3002
 
 # optional
 def build_app(app):
-    app.secret_key = "test"
+    app.secret_key = "session-secret"
     
     # pip install pypugjs
     app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
