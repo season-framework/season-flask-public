@@ -78,7 +78,7 @@ def resources(path=''):
 @app.route("/<string:module>/<path:path>", methods=HTTP_METHODS)
 def catch_all(module='', path=''):
     # load controller if exists
-    module_path = os.path.join(PATH_WEBSRC, 'modules', module)
+    module_path = os.path.join(PATH_MODULES, module)
     segmentpath = ""
 
     if len(path) > 0: segment = path.split('/')
@@ -96,19 +96,19 @@ def catch_all(module='', path=''):
 
         _path = '/'.join(_segment)
         
-        controller_path = os.path.join(PATH_PUBLIC, 'controller', module, _path , 'index.py')
+        controller_path = os.path.join(PATH_MODULES, module, 'controller' , _path, 'index.py')
         if os.path.isfile(controller_path):
             basepath = _path
             break
         
-        controller_path = os.path.join(PATH_PUBLIC, 'controller', module, _path + '.py')
+        controller_path = os.path.join(PATH_MODULES, module, 'controller', _path + '.py')
         if os.path.isfile(controller_path):
             basepath = _path
             break
 
     if os.path.isfile(controller_path) == False:
         basepath = ""
-        controller_path = os.path.join(PATH_PUBLIC, 'controller', module, 'index.py')
+        controller_path = os.path.join(PATH_MODULES, module, 'controller', 'index.py')
 
     controller = None
     if len(basepath) > 0: segmentpath = path[len(basepath) + 1:]
@@ -125,6 +125,8 @@ def catch_all(module='', path=''):
             if hasattr(controller, fnname):
                 segmentpath = segmentpath[len(fnname)+1:]
                 fnname = fnname
+            elif hasattr(controller, '__default__'):
+                fnname = '__default__'
             elif hasattr(controller, '__index__'):
                 fnname = '__index__'
             else:
@@ -138,7 +140,7 @@ def catch_all(module='', path=''):
     # process filter
     filters = config.get('filter', [])
     for _filter in filters:
-        filter_path = os.path.join(PATH_PUBLIC, 'websrc', 'app', 'filter', _filter + '.py')
+        filter_path = os.path.join(PATH_WEBSRC, 'app', 'filter', _filter + '.py')
 
         if os.path.isfile(filter_path) == False:
             continue
